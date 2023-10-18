@@ -11,13 +11,21 @@ We want to use **Autoencoders** & **Transformers** to perform several generativ 
 ### Dataset 
 
 To train the model, we intend to generate a huge dataset of 'perfect'
-music scores using online tools and damage them artificially.
-We think of generating scores of existing open-source/ licence free and randomly generated music (to avoid overfitting)
+music scores by converting [MusicXML](https://de.wikipedia.org/wiki/MusicXML) 
+files into images files using the [Verovio python interface](https://pypi.org/project/verovio/). 
 Afterwards, 
 we use some [image augmentation](https://albumentations.ai/) techniques or classic [image processing methods](https://pillow.readthedocs.io/en/stable/)
-to 'damage' the music scores images.
+to 'damage' the music-score-images.
 
-Furthermore, we split the generated dataset into a training and a test set.
+We think of generating scores of existing [open-source/ licence free](http://mscorelib.com/actree/) 
+and randomly generated music (to avoid overfitting).
+
+Using the Verovio library, we can generate images like this from a [MusicXML file](examples/) 
+(67th page of the Don Giovanni Overture by Mozart):
+<p align="center">
+  <img src="examples/render/Mozart-Don_Giovanni_66.svg" alt="Benchmark" width="600" style="background-color:#fff">
+</p>
+
 
 ### Training
 
