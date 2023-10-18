@@ -17,12 +17,12 @@ Afterwards,
 we use some [image augmentation](https://albumentations.ai/) techniques or classic [image processing methods](https://pillow.readthedocs.io/en/stable/)
 to 'damage' the music-score-images.
 
-We think of generating scores of existing [open-source/ licence free](http://mscorelib.com/actree/) 
-and randomly generated music (to avoid overfitting).
+Since there are a lot of [open-source/ licence free music sheets](http://mscorelib.com/actree/) 
+we can use them for the training, but in order to avoid overfitting we intend to generate music sheets randomly.
 
 Using the Verovio library, we can generate images like this from a [MusicXML file](examples/) 
 (67th page of the Don Giovanni Overture by Mozart):
-![Mozart-Don_Giovanni_66](examples%2Frender%2FMozart-Don_Giovanni_66.pdf)
+![Mozart: Don Giovann (sheet 66)](/home/nico/PycharmProjects/dl-music-scores-restoration/examples/render/Mozart-Don_Giovanni/sheet_66.svg)
 
 
 ### Training
@@ -34,10 +34,6 @@ the images with a [Hybrid Attention Transformer](https://arxiv.org/abs/2205.0443
 and de-blurring.
 We intend to use PyTorch to implement the two methods. 
 Furthermore, we want to combine both methods into one model and train it end-to-end.
-
-### Evaluation
-
-TODO
 
 
 ### Future Work
@@ -53,8 +49,8 @@ we think of fine-tuning the model using real scans of old used music sheets and 
 
 ## Work Breakdown structure
 
-The following table gives a very rough estimate on the tasks 
-and the time needed to finish them: 
+In the following table we break down the tasks and the
+estimated amount of time needed to complete them. 
 
 | Task                  | Estimated Time         |
 |-----------------------|------------------------|
