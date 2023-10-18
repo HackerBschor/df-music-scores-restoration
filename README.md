@@ -22,9 +22,7 @@ and randomly generated music (to avoid overfitting).
 
 Using the Verovio library, we can generate images like this from a [MusicXML file](examples/) 
 (67th page of the Don Giovanni Overture by Mozart):
-<p align="center">
-  <img src="examples/render/Mozart-Don_Giovanni_66.svg" alt="Benchmark" width="600" style="background-color:#fff">
-</p>
+![Mozart-Don_Giovanni_66](examples%2Frender%2FMozart-Don_Giovanni_66.pdf)
 
 
 ### Training
