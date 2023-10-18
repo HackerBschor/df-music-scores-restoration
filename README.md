@@ -22,8 +22,11 @@ we can use them for the training, but in order to avoid overfitting we intend to
 
 Using the Verovio library, we can generate images like this from a [MusicXML file](examples/) 
 (67th page of the Don Giovanni Overture by Mozart):
-![Mozart: Don Giovann (sheet 66)](examples/render/Mozart-Don_Giovanni/sheet_66.svg)
 
+
+<div style="text-align: center">
+    <img height="500px" src="examples/render/Mozart-Don_Giovanni/sheet_66.svg" alt="Mozart: Don Giovann (sheet 66)" title="Mozart: Don Giovann (sheet 66)" style="display: inline-block; margin: 0 auto; max-width: 300px; background-color: #ffffff">
+</div>
 
 ### Training
 
