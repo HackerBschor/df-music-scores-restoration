@@ -35,8 +35,7 @@ We aim to combine several different approaches to denoise the images ([Autoencod
 and upscale / de-blur them 
 ([Hybrid Attention Transformer](https://arxiv.org/abs/2205.04437v3) / [Convolutional Networks](https://arxiv.org/abs/1501.00092) 
 for super-resolution and de-blurring).
-We intend to use PyTorch to combine / implement the methods. 
-Furthermore, we want to combine both methods into one model and train it end-to-end.
+We intend to use PyTorch to combine / implement the method and train it end-to-end.
 
 
 ### Future Work
