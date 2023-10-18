@@ -22,7 +22,7 @@ we can use them for the training, but in order to avoid overfitting we intend to
 
 Using the Verovio library, we can generate images like this from a [MusicXML file](examples/) 
 (67th page of the Don Giovanni Overture by Mozart):
-![Mozart: Don Giovann (sheet 66)](/home/nico/PycharmProjects/dl-music-scores-restoration/examples/render/Mozart-Don_Giovanni/sheet_66.svg)
+![Mozart: Don Giovann (sheet 66)](examples/render/Mozart-Don_Giovanni/sheet_66.svg)
 
 
 ### Training
