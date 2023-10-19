@@ -5,7 +5,7 @@ Topic: `Computer Vision`
 Type: `Image Generation / Image Transformation`
 
 This project aims to restore damaged music scores using deep learning methods. 
-We want to use **Autoencoders** & **Transformers** / **Convolutional Neural Networks** 
+We want to use **Autoencoders** & **Transformers** or **Convolutional Neural Networks** (depending on the feasibility)
 to perform several generativ AI tasks to **up-scale**, 
 **de-blur** and **enrich** damaged music score into a cleaner and more readable form. 
 
@@ -56,7 +56,7 @@ we think of fine-tuning the model using real scans of old used music sheets and 
 
 ## Work Breakdown structure
 
-In the following table we break down the tasks and the
+In the following table, we break down the tasks and the
 estimated amount of time needed to complete them. 
 
 | Task                  | Estimated Time         |
