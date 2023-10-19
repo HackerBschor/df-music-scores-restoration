@@ -20,15 +20,25 @@ Since there are a lot of [open-source/ licence-free MusicXMLs](http://mscorelib.
 we can use them for the training. 
 Furthermore, we intend to generate music sheets randomly to avoid overfitting. 
 To generate the random data, we use the [Python SCAMP library](http://scamp.marcevanstein.com/index.html).  
+An example of this random generation can be found [here](examples/RandomMusic.mxl) 
+(we have to finetune the chances, though).
 
 Using the Verovio library, we start with generating SVG images from MusicXML files:
-On the left, we provided an example of a random generated music sheet (we have to fine tune the chances, though) and on the right a real one 
-(random page of the Don Giovanni Overture by Mozart generated from the [MusicXML file](examples/Mozart-Don_Giovanni.xml))
+On the left, we provide a sheet of the 'random music' and on the right a generated sheet from an
+arbitrary page of the Overture of 'Don Giovanni' by Mozart,
+generated from the [MusicXML file](examples/Mozart-Don_Giovanni.xml))
 
 <div style="text-align: center">
-    <img height="500px" src="examples/render/random_sheets/sheet_0.svg" alt="Random Generated Sheet" title="Random Generated Sheet" style="display: inline-block; margin: 0 auto; max-width: 300px; background-color: #ffffff">    
+    <img height="500px" src="examples/render/RandomMusic/sheet_2.svg" alt="Random Generated Sheet" title="Random Generated Sheet" style="display: inline-block; margin: 0 auto; max-width: 300px; background-color: #ffffff">    
     <img height="500px" src="examples/render/Mozart-Don_Giovanni/sheet_66.svg" alt="Mozart: Don Giovann (sheet 66)" title="Mozart: Don Giovann (sheet 66)" style="display: inline-block; margin: 0 auto; max-width: 300px; background-color: #ffffff">
 </div>
+
+In case you are wondering how the random music sounds like,
+we created an MP3 file from it. 
+
+<audio controls>
+  <source src="examples/RandomMusic.mp3" type="audio/mpeg">
+</audio> 
 
 ### Training
 
