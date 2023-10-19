@@ -36,7 +36,11 @@ generated from the [MusicXML file](examples/Mozart-Don_Giovanni.xml))
 In case you are wondering how the random music sounds like,
 we've created an audio file from [it](examples/RandomMusic.mp3).
 
-![RandomMusic.mp4](examples/RandomMusic.mp4)
+
+
+https://github.com/HackerBschor/dl-music-scores-restoration/assets/33778754/1dee12ec-d101-45de-85f4-2464b57a5784
+
+
 
 ### Training
 
