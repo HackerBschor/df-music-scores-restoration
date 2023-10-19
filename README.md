@@ -34,11 +34,9 @@ generated from the [MusicXML file](examples/Mozart-Don_Giovanni.xml))
 </div>
 
 In case you are wondering how the random music sounds like,
-we created an MP3 file from it. 
+we've created an audio file from [it](examples/RandomMusic.mp3).
 
-<audio controls>
-  <source src="examples/RandomMusic.mp3" type="audio/mpeg">
-</audio> 
+![RandomMusic.mp4](examples/RandomMusic.mp4)
 
 ### Training
 
