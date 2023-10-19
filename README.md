@@ -5,8 +5,9 @@ Topic: `Computer Vision`
 Type: `Image Generation / Image Transformation`
 
 This project aims to restore damaged music scores using deep learning methods. 
-We want to use **Autoencoders** & **Transformers** to perform several generativ AI tasks to perform 
-**up-scaling**, **de-blurring** & **enriching** to transform damaged music score into a cleaner and more readable form. 
+We want to use **Autoencoders** & **Transformers** / **Convolutional Neural Networks** 
+to perform several generativ AI tasks to **up-scale**, 
+**de-blur** and **enrich** damaged music score into a cleaner and more readable form. 
 
 ### Dataset 
 
@@ -18,12 +19,14 @@ to 'damage' the music-score-images.
 Since there are a lot of [open-source/ licence-free MusicXMLs](http://mscorelib.com/actree/) 
 we can use them for the training. 
 Furthermore, we intend to generate music sheets randomly to avoid overfitting. 
+To generate the random data, we use the [Python SCAMP library](http://scamp.marcevanstein.com/index.html).  
 
 Using the Verovio library, we start with generating SVG images from MusicXML files:
-
-E.g. The 67th page of the Don Giovanni Overture by Mozart generated from the [MusicXML file](examples/Mozart-Don_Giovanni.mxl): 
+On the left, we provided an example of a random generated music sheet (we have to fine tune the chances, though) and on the right a real one 
+(random page of the Don Giovanni Overture by Mozart generated from the [MusicXML file](examples/Mozart-Don_Giovanni.xml))
 
 <div style="text-align: center">
+    <img height="500px" src="examples/render/random_sheets/sheet_0.svg" alt="Random Generated Sheet" title="Random Generated Sheet" style="display: inline-block; margin: 0 auto; max-width: 300px; background-color: #ffffff">    
     <img height="500px" src="examples/render/Mozart-Don_Giovanni/sheet_66.svg" alt="Mozart: Don Giovann (sheet 66)" title="Mozart: Don Giovann (sheet 66)" style="display: inline-block; margin: 0 auto; max-width: 300px; background-color: #ffffff">
 </div>
 
