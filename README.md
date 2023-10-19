@@ -7,26 +7,26 @@ Type: `Image Generation / Image Transformation`
 This project aims to restore damaged music scores using deep learning methods. 
 We want to use **Autoencoders** & **Transformers** or **Convolutional Neural Networks** (depending on the feasibility)
 to perform several generativ AI tasks to **up-scale**, 
-**de-blur** and **enrich** damaged music score into a cleaner and more readable form. 
+**deblur** and **enrich** damaged music score into a cleaner and more readable form. 
 
 ### Dataset 
 
 To train the model, we intend to generate a huge dataset of 'perfect' music scores by converting [MusicXML](https://de.wikipedia.org/wiki/MusicXML) 
-files into images files using the [Verovio python interface](https://pypi.org/project/verovio/). 
+files into images files using the [Verovio Python interface](https://pypi.org/project/verovio/). 
 Afterwards, we use some [image augmentation](https://albumentations.ai/) techniques or classic [image processing methods](https://pillow.readthedocs.io/en/stable/)
 to 'damage' the music-score-images.
 
 Since there are a lot of [open-source/ licence-free MusicXMLs](http://mscorelib.com/actree/) 
 we can use them for the training. 
-Furthermore, we intend to generate music sheets randomly to avoid overfitting. 
-To generate the random data, we use the [Python SCAMP library](http://scamp.marcevanstein.com/index.html).  
-An example of this random generation can be found [here](examples/RandomMusic.mxl) 
-(we have to finetune the chances, though).
 
-Using the Verovio library, we start with generating SVG images from MusicXML files:
-On the left, we provide a sheet of the 'random music' and on the right a generated sheet from an
-arbitrary page of the Overture of 'Don Giovanni' by Mozart,
-generated from the [MusicXML file](examples/Mozart-Don_Giovanni.xml))
+Furthermore, we intend to generate MusicXMLs randomly to avoid overfitting and provide more training data.
+To generate the random scores, we use the [Python SCAMP library](http://scamp.marcevanstein.com/index.html).  
+
+
+After collecting the MusicXMLs, we can render music sheets. 
+Here we provide some example MusicXMLs and the rendered sheets: 
+* Left: Random Music ([MusicXML](examples/RandomMusic.xml))
+* Right: Mozart: Overture of 'Don Giovanni' ([MusicXML](examples/Mozart-Don_Giovanni.xml))
 
 <div style="text-align: center">
     <img height="500px" src="examples/render/RandomMusic/sheet_2.svg" alt="Random Generated Sheet" title="Random Generated Sheet" style="display: inline-block; margin: 0 auto; max-width: 300px; background-color: #ffffff">    
@@ -34,7 +34,7 @@ generated from the [MusicXML file](examples/Mozart-Don_Giovanni.xml))
 </div>
 
 In case you are wondering how the random music sounds like,
-we've created an audio file from [it](examples/RandomMusic.mp3).
+we've created an [audio file](examples/RandomMusic.mp3):
 
 
 
@@ -47,9 +47,9 @@ https://github.com/HackerBschor/dl-music-scores-restoration/assets/33778754/1dee
 Using the damaged and the non-damaged music scores of the training set, 
 we will train a model on the 'perfect' scores and use the damaged ones as input.
 We aim to combine several different approaches to denoise the images ([Autoencoders](https://www.researchgate.net/publication/356423394_Denoising_Text_Image_Documents_using_Autoencoders) ) 
-and upscale / de-blur them 
+and upscale / sharpen them 
 ([Hybrid Attention Transformer](https://arxiv.org/abs/2205.04437v3) / [Convolutional Networks](https://arxiv.org/abs/1501.00092) 
-for super-resolution and de-blurring).
+for super-resolution and deblurring).
 We intend to use PyTorch to combine / implement the method and train it end-to-end.
 
 
