@@ -54,5 +54,31 @@ def convert_sheets(input_dir, prefix):
 			musicxml_to_svg(file_path, "../dataset/existing/render", name)
 
 
+def convert_svg_to_png(input_file, output_file, width=4916, height=7016):
+	os.system(f"inkscape -w {width} -h {height} '{input_file}' -o '{output_file}'")
+
+
 if __name__ == '__main__':
-	convert_sheets("../dataset/existing/cmidi/", [])
+	import re
+
+	files = []
+
+	path_in = "../dataset/existing/render"
+	path_out = "../dataset/pairs/perfect"
+
+	for folder in os.listdir(path_in):
+		for file in os.listdir(f"{path_in}/{folder}/"):
+			path_file_in = os.path.join(path_in, folder, file)
+
+			name = f"{folder}_{'_'.join(file.split('.')[0].split('_')[1:])}".replace(" ", "_")
+			name = re.sub(r'\W+', '', name)
+			while "__" in name:
+				name = name.replace("__", "_")
+
+			path_file_out = os.path.join(path_out, name+".png")
+
+			files.append((path_file_in, path_file_out))
+
+	for i, (file_in, file_out) in enumerate(files):
+		print(f"Converting {i+1} / {len(files)} ({float((i+1)*100)/len(files):.2f}%)")
+		convert_svg_to_png(file_in, file_out)
