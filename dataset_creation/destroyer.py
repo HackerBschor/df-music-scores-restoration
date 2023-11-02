@@ -2,6 +2,8 @@ import numpy as np
 from PIL import Image
 import matplotlib.pyplot as plt
 import random
+from skimage.util import random_noise
+from skimage.io import imread, imshow
 
 
 class ImageDestroyer:
@@ -9,8 +11,8 @@ class ImageDestroyer:
 		self.input_file = input_file
 		self.output_file = output_file
 
-		self.im = Image.open(input_file)
-		self.img_width, self.img_height = self.im.size
+		self.im = imread(input_file)
+		# self.img_width, self.img_height = self.im.size
 
 	def rotate(self):
 		expand = random.random() > 0.5
@@ -25,17 +27,16 @@ class ImageDestroyer:
 		self.im = self.im.resize((self.img_width, self.img_height))
 
 	def noisy(self):
-		noise = np.repeat(np.random.randint(0, 255, (self.img_height, self.img_width, 1), dtype=np.dtype('uint8')), 4, axis=2)
-		self.im.paste(Image.fromarray(noise))
+		self.im = random_noise(self.im)
 
 	def destroy_image(self):
-		self.rotate()
-		self.blur()
+		#self.rotate()
+		#self.blur()
 		self.noisy()
-		plt.imshow(self.im)
+		imshow(self.im)
 		plt.show()
 
 
 if __name__ == '__main__':
-	id = ImageDestroyer("../dataset/generated/render/test/png/sheet_2.png", None)
-	id.destroy_image()
+	imd = ImageDestroyer("../dataset/pairs/perfect_big/Bach_Bwv001_400_Chorales_006707b_0.png", None)
+	imd.destroy_image()

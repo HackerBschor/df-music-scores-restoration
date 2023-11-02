@@ -54,11 +54,12 @@ def convert_sheets(input_dir, prefix):
 			musicxml_to_svg(file_path, "../dataset/existing/render", name)
 
 
-def convert_svg_to_png(input_file, output_file, width=4916, height=7016):
-	os.system(f"inkscape -w {width} -h {height} '{input_file}' -o '{output_file}'")
+def convert_svg_to_png(input_file, output_file, width=2480, height=3508):
+	os.system(f"inkscape -b FFFFFF -w {width} -h {height} '{input_file}' -o '{output_file}'")
 
 
 if __name__ == '__main__':
+	"""
 	import re
 
 	files = []
@@ -79,6 +80,30 @@ if __name__ == '__main__':
 
 			files.append((path_file_in, path_file_out))
 
-	for i, (file_in, file_out) in enumerate(files):
-		print(f"Converting {i+1} / {len(files)} ({float((i+1)*100)/len(files):.2f}%)")
-		convert_svg_to_png(file_in, file_out)
+	with open("../tmp/files.txt", "w") as f:
+		f.write("\n".join(map(lambda x: f"{x[0]}{chr(1)}{x[1]}", files)))
+	"""
+
+	with open("../tmp/files.txt", "r") as fr:
+		files = list(map(lambda x: x.split(chr(1)), fr.read().split("\n")))
+
+	try:
+		with open("../tmp/progress_done.txt", "r") as fr:
+			files_done = set(fr.read().split("\n"))
+	except FileNotFoundError:
+		files_done = set()
+
+	with open("../tmp/progress_done.txt", "a") as fw:
+		for i, (file_in, file_out) in enumerate(files):
+			print(f"Converting {i + 1} / {len(files)} ({float((i + 1) * 100) / len(files):.2f}%)", end = "")
+
+			if file_out in files_done:
+				print(" - Already done")
+				continue
+
+			fw.write(file_out + "\n")
+			files_done.add(file_out)
+
+			convert_svg_to_png(file_in, file_out)
+
+			print(" - Done")
