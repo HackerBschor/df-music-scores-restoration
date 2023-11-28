@@ -1,4 +1,6 @@
-from scamp import NoteProperties, StartSlur, Session, StopSlur, wait, SpellingPolicy
+import os.path
+
+from scamp import StartSlur, Session, StopSlur, wait, SpellingPolicy
 import random
 
 from dataset_creation.conversion_tools import musicxml_to_svg, files_to_pdf
@@ -7,7 +9,7 @@ characters = [chr(97 + i) for i in range(26)] + [" " for _ in range(3)] + [str(i
 lengths = [1 / 4, 1 / 3, 2 / 3, 1 / 2, 3 / 4, 1]
 
 
-def gen_rand_str(max_length=30):
+def gen_rand_str(max_length: int = 30):
 	size = range(random.randint(0, max_length))
 	string = "".join([characters[random.randint(0, len(characters) - 1)] for _ in size])
 	return " ".join(map(lambda x: x if random.random() < 0.5 else x.capitalize(), string.split(" "))).strip()
@@ -22,16 +24,16 @@ def calc_length_to_full_beat(beat):
 
 
 class RandomMusicGenerator:
-	def __init__(self, num_instruments=1, bass_notes=(20, 60), violin_notes=(60, 100), num_beats=1000):
-		self.num_instruments = num_instruments
-		self.note_range = [get_rand_from_list([bass_notes, violin_notes]) for _ in range(num_instruments)]
-		self.num_beats = num_beats
+	def __init__(self, num_instruments=(1, 10), bass_notes=(20, 60), violin_notes=(60, 100), num_beats=(100, 1000)):
+		self.num_instruments = random.randint(num_instruments[0], num_instruments[1])
+		self.note_range = [get_rand_from_list([bass_notes, violin_notes]) for _ in range(self.num_instruments)]
+		self.num_beats = random.randint(num_beats[0], num_beats[1])
 
 		self.s = Session(tempo=(random.random() * 100 + 40))
-		self.s.fast_forward_to_beat(num_beats)
-		self.is_slur = [0 for _ in range(num_instruments)]
-		self.instruments = [self.s.new_part(gen_rand_str(15)) for _ in range(num_instruments)]
-		self.curr_beat = [0 for _ in range(num_instruments)]
+		self.s.fast_forward_to_beat(self.num_beats)
+		self.is_slur = [0 for _ in range(self.num_instruments)]
+		self.instruments = [self.s.new_part(gen_rand_str(15)) for _ in range(self.num_instruments)]
+		self.curr_beat = [0 for _ in range(self.num_instruments)]
 
 	def generate_note_properties(self, num_instrument, slur):
 		properties = []
@@ -83,14 +85,16 @@ class RandomMusicGenerator:
 
 			self.curr_beat[num_instrument] += length
 
-	def play_music_to_xml(self, path, name):
+	def play_music_to_xml(self, path, name, export_midi=False):
 		self.s.start_transcribing()
 		for i in range(self.num_instruments):
 			self.s.fork(lambda _: self.play(i))
 		self.s.wait_for_children_to_finish()
 
 		performance = self.s.stop_transcribing()
-		performance.export_to_midi_file(f"{path}/{name}.mid")
+
+		if export_midi:
+			performance.export_to_midi_file(f"{path}/{name}.mid")
 
 		score_xml = None
 		while score_xml is None:
@@ -98,17 +102,24 @@ class RandomMusicGenerator:
 			try:
 				score = performance.to_score(title=gen_rand_str(), composer=gen_rand_str(), time_signature=tim_sig)
 				score_xml = score.to_music_xml()
-			except Exception:
+			except ValueError:
 				pass
 
 		score_xml.export_to_file(f"{path}/{name}.mxl")
 
+		self.s.kill()
+
 
 if __name__ == '__main__':
-	path = "dataset/generated"
-	name = "test"
 
-	generator = RandomMusicGenerator(num_instruments=4, num_beats=100)
-	generator.play_music_to_xml(f"{path}/musicxml", name)
-	files = musicxml_to_svg(f"{path}/musicxml/{name}.mxl", f"{path}/render/", name)
-	files_to_pdf(files, f"{path}/render/{name}.pdf")
+	for i in range(274, 1000):
+		print(f"Generating {i}")
+		path = "dataset/generated"
+		name = f"generated_{i}"
+		try:
+			generator = RandomMusicGenerator()
+			generator.play_music_to_xml(f"{path}/musicxml", name)
+			files = musicxml_to_svg(f"{path}/musicxml/{name}.mxl", f"{path}/render/", name)
+
+		except Exception as e:
+			print(e)

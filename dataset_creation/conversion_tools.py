@@ -1,5 +1,7 @@
 import os
+import subprocess
 import time
+import re
 
 import verovio
 import cairosvg
@@ -36,7 +38,7 @@ def musicxml_to_svg(input_file, output_path, name, first_page_only=False):
 
 	for i in range(1 if first_page_only else tk.getPageCount()):
 		file = f"{output_path}/{name}/sheet_{i}.svg"
-		tk.renderToSVGFile(file, (i+1))
+		tk.renderToSVGFile(file, (i + 1))
 		output_files.append(file)
 
 	return output_files
@@ -50,22 +52,27 @@ def convert_sheets(input_dir, prefix):
 			convert_sheets(file_path, prefix + [element])
 		else:
 			print("Converting:", prefix, element)
-			name = "".join(map(lambda x: x+"_", prefix)) + element.split(".")[0]
+			name = "".join(map(lambda x: x + "_", prefix)) + element.split(".")[0]
 			musicxml_to_svg(file_path, "../dataset/existing/render", name)
 
 
 def convert_svg_to_png(input_file, output_file, width=2480, height=3508):
-	os.system(f"inkscape -b FFFFFF -w {width} -h {height} '{input_file}' -o '{output_file}'")
+	result = subprocess.run(
+		["inkscape", "-b", "FFFFFF", "-w", str(width), "-h", str(height), input_file, "-o", output_file],
+		stdout=subprocess.PIPE, stderr=subprocess.PIPE
+	)
+	success = (len(result.stderr) < 100 and "Background RRGGBBAA" in str(result.stderr)) or ("Background RRGGBBAA" not in str(result.stderr) and len(result.stderr) == 0)
+
+	return success, result.stderr.decode("utf-8")
 
 
-if __name__ == '__main__':
-	"""
-	import re
+def convert_files(path_in="../dataset/existing/render", path_out="../dataset/pairs/perfect", tmp_dir="../tmp"):
+	try:
+		os.mkdir(tmp_dir)
+	except FileExistsError:
+		pass
 
 	files = []
-
-	path_in = "../dataset/existing/render"
-	path_out = "../dataset/pairs/perfect"
 
 	for folder in os.listdir(path_in):
 		for file in os.listdir(f"{path_in}/{folder}/"):
@@ -78,32 +85,48 @@ if __name__ == '__main__':
 
 			path_file_out = os.path.join(path_out, name+".png")
 
+			if os.path.exists(path_file_out):
+				continue
+
 			files.append((path_file_in, path_file_out))
 
-	with open("../tmp/files.txt", "w") as f:
+	with open(os.path.join(tmp_dir, "files.txt"), "w") as f:
 		f.write("\n".join(map(lambda x: f"{x[0]}{chr(1)}{x[1]}", files)))
-	"""
 
-	with open("../tmp/files.txt", "r") as fr:
-		files = list(map(lambda x: x.split(chr(1)), fr.read().split("\n")))
+	with open(os.path.join(tmp_dir, "files.txt"), "r") as fr:
+		lines = fr.read()
+		if lines != "":
+			files = list(map(lambda x: x.split(chr(1)), lines.split("\n")))
+		else:
+			files = []
 
 	try:
-		with open("../tmp/progress_done.txt", "r") as fr:
+		with open(os.path.join(tmp_dir, "progress_done.txt"), "r") as fr:
 			files_done = set(fr.read().split("\n"))
 	except FileNotFoundError:
 		files_done = set()
 
-	with open("../tmp/progress_done.txt", "a") as fw:
+	with open(os.path.join(tmp_dir, "progress_done.txt"), "a") as fw:
 		for i, (file_in, file_out) in enumerate(files):
-			print(f"Converting {i + 1} / {len(files)} ({float((i + 1) * 100) / len(files):.2f}%)", end = "")
+			print(f"Converting {i + 1} / {len(files)} ({float((i + 1) * 100) / len(files):.2f}%)", end="")
 
 			if file_out in files_done:
 				print(" - Already done")
 				continue
 
-			fw.write(file_out + "\n")
-			files_done.add(file_out)
+			success, error = convert_svg_to_png(file_in, file_out)
 
-			convert_svg_to_png(file_in, file_out)
+			if success:
+				fw.write(file_out + "\n")
+				files_done.add(file_out)
+				print(" - Done")
+			else:
+				print(f"- Error: ({error})")
 
-			print(" - Done")
+	os.remove(os.path.join(tmp_dir, "files.txt"))
+	os.remove(os.path.join(tmp_dir, "progress_done.txt"))
+	os.rmdir(tmp_dir)
+
+
+if __name__ == '__main__':
+	convert_files(path_in="../dataset/generated/render", path_out="../dataset/generated/img", tmp_dir="../tmp")
