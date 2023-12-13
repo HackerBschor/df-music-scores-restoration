@@ -1,42 +1,19 @@
 import os
-import subprocess
-import time
 import re
 
+import subprocess
+
 import verovio
-import cairosvg
-from pypdf import PdfMerger
 
 
-def files_to_pdf(files, output_pdf="output.pdf"):
-	merger = PdfMerger()
-	temp_dir = f"tmp_{time.time_ns()}"
-	os.makedirs(temp_dir)
-
-	pdf_files = []
-	for i, file in enumerate(files):
-		pdf_file = f"{temp_dir}/sheet_{i}.pdf"
-		pdf_files.append(pdf_file)
-		cairosvg.svg2pdf(url=file, write_to=pdf_file)
-		merger.append(pdf_file)
-
-	merger.write(output_pdf)
-	merger.close()
-
-	for file in pdf_files:
-		os.remove(file)
-
-	os.rmdir(temp_dir)
-
-
-def musicxml_to_svg(input_file, output_path, name, first_page_only=False):
+def musicxml_to_svg(input_file, output_path, name):
 	tk = verovio.toolkit()
 	tk.loadFile(input_file)
 
 	output_files = []
 	os.makedirs(f"{output_path}/{name}", exist_ok=True)
 
-	for i in range(1 if first_page_only else tk.getPageCount()):
+	for i in range(tk.getPageCount()):
 		file = f"{output_path}/{name}/sheet_{i}.svg"
 		tk.renderToSVGFile(file, (i + 1))
 		output_files.append(file)
@@ -126,7 +103,3 @@ def convert_files(path_in="../dataset/existing/render", path_out="../dataset/pai
 	os.remove(os.path.join(tmp_dir, "files.txt"))
 	os.remove(os.path.join(tmp_dir, "progress_done.txt"))
 	os.rmdir(tmp_dir)
-
-
-if __name__ == '__main__':
-	convert_files(path_in="../dataset/generated/render", path_out="../dataset/generated/img", tmp_dir="../tmp")

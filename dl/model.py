@@ -1,32 +1,32 @@
-import torch.nn.functional as F
 from torch import nn
 
 
-class Denoiser(nn.Module):
+class ConvAutoencoderDenoiser (nn.Module):
+    def __init__(self, size):
+        super().__init__()
+        # defining the encoder
+        self.encoder = nn.Sequential(
+            nn.Conv2d(1, 32, kernel_size=3, padding=1, stride=1),
+            nn.ReLU(),
+            nn.MaxPool2d(2, 2),
+            nn.Conv2d(32, 64, kernel_size=3, padding=1, stride=1),
+            nn.ReLU(),
+            nn.MaxPool2d(2, 2),
+        )
 
-	def __init__(self):
-		super().__init__();
-		# defining the encoder
-		self.conv1 = nn.Conv2d(1, 32, kernel_size=3, padding=1)
-		self.conv2 = nn.Conv2d(32, 64, kernel_size=3, padding=1)
+        self.decoder = nn.Sequential(
+            nn.Conv2d(64, 64, kernel_size=3, padding=1, stride=1),
+            nn.ReLU(),
+            nn.Upsample(scale_factor=2),
+            nn.Conv2d(64, 32, kernel_size=3, padding=1, stride=1),
+            nn.ReLU(),
+            nn.Upsample(scale_factor=2),
+            nn.Conv2d(32, 1, kernel_size=3, padding=1, stride=1),
+            nn.Upsample(size=size),
+            nn.Tanh()
+        )
 
-		self.pool = nn.MaxPool2d(2, 2)
-
-		# defining the decoder
-		self.convt_1 = nn.Conv2d(64, 64, kernel_size=3, padding=1)
-		self.convt_2 = nn.Conv2d(64, 32, kernel_size=3, padding=1)
-		self.convt_3 = nn.Conv2d(32, 1, kernel_size=3, padding=1)
-
-	def forward(self, x):
-		# passing the image through encoder
-		x = self.pool(F.relu(self.conv1(x)))
-		x = self.pool(F.relu(self.conv2(x)))
-
-		# passing the encoded part through decoder
-		x = F.relu(self.convt_1(x))
-		x = F.interpolate(x, scale_factor=2, mode='nearest')
-		x = F.relu(self.convt_2(x))
-		x = F.interpolate(x, scale_factor=2, mode='nearest')
-		x = F.sigmoid(self.convt_3(x))
-
-		return x
+    def forward(self, x):
+        x = self.encoder(x)
+        x = self.decoder(x)
+        return x

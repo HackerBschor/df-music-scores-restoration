@@ -1,9 +1,5 @@
-import os.path
-
 from scamp import StartSlur, Session, StopSlur, wait, SpellingPolicy
 import random
-
-from dataset_creation.conversion_tools import musicxml_to_svg, files_to_pdf
 
 characters = [chr(97 + i) for i in range(26)] + [" " for _ in range(3)] + [str(i) for i in range(10)]
 lengths = [1 / 4, 1 / 3, 2 / 3, 1 / 2, 3 / 4, 1]
@@ -15,8 +11,8 @@ def gen_rand_str(max_length: int = 30):
 	return " ".join(map(lambda x: x if random.random() < 0.5 else x.capitalize(), string.split(" "))).strip()
 
 
-def get_rand_from_list(l):
-	return l[random.randint(0, len(l) - 1)]
+def get_rand_from_list(element_list):
+	return element_list[random.randint(0, len(element_list) - 1)]
 
 
 def calc_length_to_full_beat(beat):
@@ -108,18 +104,3 @@ class RandomMusicGenerator:
 		score_xml.export_to_file(f"{path}/{name}.mxl")
 
 		self.s.kill()
-
-
-if __name__ == '__main__':
-
-	for i in range(274, 1000):
-		print(f"Generating {i}")
-		path = "dataset/generated"
-		name = f"generated_{i}"
-		try:
-			generator = RandomMusicGenerator()
-			generator.play_music_to_xml(f"{path}/musicxml", name)
-			files = musicxml_to_svg(f"{path}/musicxml/{name}.mxl", f"{path}/render/", name)
-
-		except Exception as e:
-			print(e)

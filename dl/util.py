@@ -1,44 +1,21 @@
+from typing import Tuple
+
 import matplotlib.pyplot as plt
 import torch
+from torchvision import transforms
 import numpy as np
+from PIL import Image
 
 
-def undo_preprocessing(image_tensor: torch.Tensor) -> np.ndarray:
-    image_numpy = image_tensor.numpy()
-
-    # Undo preprocessing
-    mean = np.array(0.5)
-    std = np.array(0.5)
-    image = std * image_numpy + mean
-
-    return image
+def generate_preprocess_transformer(size: Tuple[int, int]) -> transforms.Compose:
+    return transforms.Compose([transforms.Resize(size), transforms.ToTensor(), transforms.Normalize(0.5, 0.5)])
 
 
-def show_clean_dirty_images(tensor_img_dirty: torch.Tensor, tensor_img_clean: torch.Tensor) -> None:
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 10))
-    img_1 = undo_preprocessing(tensor_img_dirty)
-    img_2 = undo_preprocessing(tensor_img_clean)
-
-    ax1.imshow(img_1.squeeze(), cmap='gray')
-    ax1.set_title('Dirty Image')
-    ax2.imshow(img_2.squeeze(), cmap='gray')
-    ax2.set_title('Clean Image')
-
-    plt.show()
+def preprocess(path: str, filename: str, transformer: transforms.Compose) -> torch.Tensor:
+    image = Image.open(f"{path}/{filename}").convert('L')
+    return transformer(image)
 
 
-def show_clean_dirty_prediction_images(
-        tensor_img_dirty: torch.Tensor, tensor_img_clean: torch.Tensor, tensor_img_prediction: torch.Tensor) -> None:
-    fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(10, 10))
-    img_1 = undo_preprocessing(tensor_img_dirty)
-    img_2 = undo_preprocessing(tensor_img_clean)
-    img_3 = undo_preprocessing(tensor_img_prediction)
-
-    ax1.imshow(img_1.squeeze(), cmap='gray')
-    ax1.set_title('Dirty Image')
-    ax2.imshow(img_2.squeeze(), cmap='gray')
-    ax2.set_title('Clean Image')
-    ax3.imshow(img_3.squeeze(), cmap='gray')
-    ax3.set_title('Prediction Image')
-
-    plt.show()
+def undo_preprocessing(tensor: torch.Tensor) -> Image.Image:
+    tensor_np = ((0.5 * tensor.detach().numpy() + 0.5) * 255).astype(np.uint8).squeeze()
+    return Image.fromarray(tensor_np).convert('RGB')

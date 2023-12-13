@@ -5,25 +5,19 @@ Topic: `Computer Vision`
 Type: `Image Generation / Image Transformation`
 
 This project aims to restore damaged music scores using deep learning methods. 
-We want to use **Autoencoders** & **Transformers** or **Convolutional Neural Networks** (depending on the feasibility)
-to perform several generativ AI tasks to **up-scale**, 
+We use **Convolutional Autoencoder** to perform several generativ AI tasks to **up-scale**, 
 **deblur** and **enrich** damaged music score into a cleaner and more readable form. 
 
 ### Dataset 
 
-To train the model, we intend to generate a huge dataset of 'perfect' music scores by converting [MusicXML](https://de.wikipedia.org/wiki/MusicXML) 
-files into images files using the [Verovio Python interface](https://pypi.org/project/verovio/). 
-Afterwards, we use some [image augmentation](https://albumentations.ai/) techniques or classic [image processing methods](https://pillow.readthedocs.io/en/stable/)
-to 'damage' the music-score-images.
+To train the model, we generated a huge dataset of clean music scores by rendering [MusicXML](https://de.wikipedia.org/wiki/MusicXML) 
+files into svg files by using the [Verovio Python interface](https://pypi.org/project/verovio/). 
+Using the [INKSCAPE](https://inkscape.org/de/) CLI tools, we convert the svg files into png files.  
 
-Since there are a lot of [open-source/ licence-free MusicXMLs](http://mscorelib.com/actree/) 
-we can use them for the training. 
+We used the licence-free MusicXML files from [MScoreLib](http://mscorelib.com/actree/). Furthermore, 
+we generated MusicXML files randomly. This enables a limitless scaling of the training data.
+We generated the random scores using the [Python SCAMP library](http://scamp.marcevanstein.com/index.html).  
 
-Furthermore, we intend to generate MusicXMLs randomly to avoid overfitting and provide more training data.
-To generate the random scores, we use the [Python SCAMP library](http://scamp.marcevanstein.com/index.html).  
-
-
-After collecting the MusicXMLs, we can render music sheets. 
 Here we provide some example MusicXMLs and the rendered sheets: 
 * Left: Random Music ([MusicXML](examples/RandomMusic.xml))
 * Right: Mozart: Overture of 'Don Giovanni' ([MusicXML](examples/Mozart-Don_Giovanni.xml))
@@ -36,9 +30,17 @@ Here we provide some example MusicXMLs and the rendered sheets:
 In case you are wondering how the random music sounds like,
 we've created an [audio file](examples/RandomMusic.mp3):
 
-
-
 https://github.com/HackerBschor/dl-music-scores-restoration/assets/33778754/1dee12ec-d101-45de-85f4-2464b57a5784
+
+To create the dirty images, we use the data augmentation tool [DocCreator](https://doc-creator.labri.fr/).
+We used the following degenerations resulting in 4 dirty images for one clean image : 
+
+| Task                   | Min | Max  |
+|------------------------|-----|------|
+| Character Degeneration | 90% | 100% |
+| Bleed Through          | 50% | 99%  |
+| Blur (Whole Page)      | 80% | 100% |
+| Hole                   | 16% | 32%  |
 
 
 

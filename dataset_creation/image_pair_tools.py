@@ -44,4 +44,5 @@ if __name__ == '__main__':
     perfect, broken = get_file_lists(perfect, broken)
     dict_perfect_broken = create_perfect_broken_dict(perfect, broken)
     df = dict_to_df(dict_perfect_broken)
-    print(df.to_pickle("../dataset/pairs/perfect_broken_index.pkl"))
+    print(df)
+    df.to_pickle("../dataset/pairs/perfect_broken_index.pkl")
