@@ -2,59 +2,75 @@ import os
 import re
 
 import subprocess
+from typing import List, Tuple
 
 import verovio
+from verovio import toolkit
 
 
-def musicxml_to_svg(input_file, output_path, name):
-	tk = verovio.toolkit()
+def musicxml_to_svg(input_file: str, output_path: str, name: str) -> List[str]:
+	tk: toolkit = toolkit()
 	tk.loadFile(input_file)
 
-	output_files = []
+	output_files: List[str] = []
 	os.makedirs(f"{output_path}/{name}", exist_ok=True)
 
 	for i in range(tk.getPageCount()):
-		file = f"{output_path}/{name}/sheet_{i}.svg"
+		file: str = f"{output_path}/{name}/sheet_{i}.svg"
 		tk.renderToSVGFile(file, (i + 1))
 		output_files.append(file)
 
 	return output_files
 
 
-def convert_sheets(input_dir, prefix):
-	for element in os.listdir(input_dir):
-		file_path = os.path.join(input_dir, element)
+def convert_sheets(input_dir: str, prefix: List[str]) -> None:
+	"""
+	Convert all musicXML sheets in a folder (containing sub-folders) into SVG files.
+	Add the folders as prefixes to output files. Example:
+	input_dir
+	├───song.mxl
+	└───a
+		└───b
+			└───c.mxl
+	-> song_1.svg, song_2.svg, ..., song_n.svg, a_b_c_N.svg, a_b_c_1.svg, ..., a_b_c_M.svg
+	"""
 
+	# Walk through every element in the input folder
+	for element in os.listdir(input_dir):
+		file_path: str = os.path.join(input_dir, element)
+
+		# If the element is a folder, add the folder name to the prefix and recursively execute the function
 		if os.path.isdir(file_path):
 			convert_sheets(file_path, prefix + [element])
 		else:
 			print("Converting:", prefix, element)
-			name = "".join(map(lambda x: x + "_", prefix)) + element.split(".")[0]
+			name: str = "".join(map(lambda x: x + "_", prefix)) + element.split(".")[0]
 			musicxml_to_svg(file_path, "../dataset/existing/render", name)
 
 
-def convert_svg_to_png(input_file, output_file, width=2480, height=3508):
-	result = subprocess.run(
-		["inkscape", "-b", "FFFFFF", "-w", str(width), "-h", str(height), input_file, "-o", output_file],
-		stdout=subprocess.PIPE, stderr=subprocess.PIPE
-	)
-	success = (len(result.stderr) < 100 and "Background RRGGBBAA" in str(result.stderr)) or ("Background RRGGBBAA" not in str(result.stderr) and len(result.stderr) == 0)
+def convert_svg_to_png(input_file: str, output_file: str, width: int = 2480, height: int = 3508) -> Tuple[bool, str]:
+	args: List[str] = ["inkscape", "-b", "FFFFFF", "-w", str(width), "-h", str(height), input_file, "-o", output_file]
+
+	result: subprocess.CompletedProcess = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+	success: bool = (len(result.stderr) < 100 and "Background RRGGBBAA" in str(result.stderr)) or \
+					("Background RRGGBBAA" not in str(result.stderr) and len(result.stderr) == 0)
 
 	return success, result.stderr.decode("utf-8")
 
 
-def convert_files(path_in="../dataset/existing/render", path_out="../dataset/pairs/perfect", tmp_dir="../tmp"):
-	try:
-		os.mkdir(tmp_dir)
-	except FileExistsError:
-		pass
+def convert_files(path_in: str, path_out: str, tmp_dir: str):
+	os.makedirs(tmp_dir, exist_ok=True)
 
-	files = []
+	files: List[Tuple[str, str]] = []
 
+	# record all svg files in the sub-folders of a path_in into
 	for folder in os.listdir(path_in):
 		for file in os.listdir(f"{path_in}/{folder}/"):
+
 			path_file_in = os.path.join(path_in, folder, file)
 
+			# sanitizes filename
 			name = f"{folder}_{'_'.join(file.split('.')[0].split('_')[1:])}".replace(" ", "_")
 			name = re.sub(r'\W+', '', name)
 			while "__" in name:
@@ -67,22 +83,14 @@ def convert_files(path_in="../dataset/existing/render", path_out="../dataset/pai
 
 			files.append((path_file_in, path_file_out))
 
-	with open(os.path.join(tmp_dir, "files.txt"), "w") as f:
-		f.write("\n".join(map(lambda x: f"{x[0]}{chr(1)}{x[1]}", files)))
-
-	with open(os.path.join(tmp_dir, "files.txt"), "r") as fr:
-		lines = fr.read()
-		if lines != "":
-			files = list(map(lambda x: x.split(chr(1)), lines.split("\n")))
-		else:
-			files = []
-
+	# To save the progress, read the already converted files from the `progress_done.txt` file
 	try:
 		with open(os.path.join(tmp_dir, "progress_done.txt"), "r") as fr:
 			files_done = set(fr.read().split("\n"))
 	except FileNotFoundError:
 		files_done = set()
 
+	# Convert files (if not already done) and append them in the `progress_done.txt` file
 	with open(os.path.join(tmp_dir, "progress_done.txt"), "a") as fw:
 		for i, (file_in, file_out) in enumerate(files):
 			print(f"Converting {i + 1} / {len(files)} ({float((i + 1) * 100) / len(files):.2f}%)", end="")
@@ -100,6 +108,7 @@ def convert_files(path_in="../dataset/existing/render", path_out="../dataset/pai
 			else:
 				print(f"- Error: ({error})")
 
+	# Clean TMP files
 	os.remove(os.path.join(tmp_dir, "files.txt"))
 	os.remove(os.path.join(tmp_dir, "progress_done.txt"))
 	os.rmdir(tmp_dir)

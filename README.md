@@ -3,6 +3,10 @@
 Topic: `Computer Vision` 
 <br>
 Type: `Image Generation / Image Transformation`
+<br>
+Error Metric: `Mean Squared Error`
+<br>
+Target Score: `Better than Baselines (specified in a later section)`
 
 This project aims to restore damaged music scores using deep learning methods. 
 We use **Convolutional Autoencoder** to perform several generative AI tasks to **up-scale**, 
@@ -69,20 +73,17 @@ Since evaluating generative AI can be quite challenging, we came up with differe
 * Train a Baseline using 1% of the training data.
 
 The first three baselines are implemented in the [Mock Baselines Pipeline](dl/mock_baselines.ipynb).
-and the last one is trained in the [Training Pipeline (1% Data)](dl%2Ftraining_baseline.ipynb). 
+and the last one is trained in the [Training Pipeline (1% Data)](dl/training_baseline.ipynb). 
 
 ## Results
 
 | White Image | Dirty Image | Random Image | 1% Data Model | Full Model |
 |:-----------:|:-----------:|:------------:|:-------------:|:----------:|
-|    0.146    |    0.033    |     1.31     |     0.053     |            | 
+|    0.146    |    0.033    |     1.31     |     0.053     |            |
 
-## Results
-
-### Future Work
+## Future Work
 In the future, 
 we think of fine-tuning the model using real scans of old used music sheets and brand-new ones.
-
 
 ## References
 * [Denoising Text Image Documents using Autoencoders](https://www.researchgate.net/publication/356423394_Denoising_Text_Image_Documents_using_Autoencoders)
