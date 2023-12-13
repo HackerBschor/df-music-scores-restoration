@@ -65,13 +65,17 @@ Since evaluating generative AI can be quite challenging, we came up with differe
 * Returning a completely white Image
   * For different architecture and loss functions, the model quickly collapsed, so it ony returned a white image 
     (most of the image is just white). So we came up with this baseline.
+* Returning a random image
 * Train a Baseline using 1% of the training data.
+
+The first three baselines are implemented in the [Mock Baselines Pipeline](dl/mock_baselines.ipynb).
+and the last one is trained in the [Training Pipeline (1% Data)](dl%2Ftraining_baseline.ipynb). 
 
 ## Results
 
-| Same Image | White Image | 1% Data Model | Full Model |
-|------------|:-----------:|:-------------:|------------|
-|            |             |     0.053     |            | 
+| White Image | Dirty Image | Random Image | 1% Data Model | Full Model |
+|:-----------:|:-----------:|:------------:|:-------------:|:----------:|
+|    0.146    |    0.033    |     1.31     |     0.053     |            | 
 
 ## Results
 
