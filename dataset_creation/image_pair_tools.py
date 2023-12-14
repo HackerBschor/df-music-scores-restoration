@@ -14,8 +14,10 @@ def get_files_clean_dirty(folder_perfect: str, folder_broken: str) -> Tuple[Set[
     return set(files_clean), set(files_dirty)
 
 
-# Create a dictionary with the clean files as keys and a list of the according dirty files (created by DocCreator)
 def create_dict_clean_dirty(files_clean: Set[str], files_dirty: Set[str]) -> Dict[str, list]:
+    """
+    Create a dictionary with the clean files as keys and a list of the according dirty files (created by DocCreator)
+    """
     files_dict: Dict[str, list] = {}
 
     for i, f1 in enumerate(files_clean):

@@ -7,7 +7,11 @@ from typing import List, Tuple
 from verovio import toolkit
 
 
-def convert_mxl_to_svg(input_file: str, output_path: str, name: str) -> List[str]:
+def convert_mxl_to_svgs(input_file: str, output_path: str, name: str) -> List[str]:
+	"""
+	Convert a musicXML file into a list of SVG files and save them in the output_path.
+	Each file contains one sheet of the converted musicXML file.
+	"""
 	tk: toolkit = toolkit()
 	tk.loadFile(input_file)
 
@@ -42,7 +46,7 @@ def convert_mxls_to_svg(input_path: str, output_path: str, prefix: List[str] = (
 			convert_mxls_to_svg(file_path, output_path, list(prefix) + [element])
 		else:
 			name: str = "".join(map(lambda x: x + "_", prefix)) + element.split(".")[0]
-			convert_mxl_to_svg(file_path, output_path, name)
+			convert_mxl_to_svgs(file_path, output_path, name)
 
 
 def convert_svg_to_png(input_file: str, output_file: str, width: int = 2480, height: int = 3508) -> Tuple[bool, str]:
@@ -68,7 +72,6 @@ def convert_svgs_to_png(path_in: str, path_out: str, tmp_dir: str = "tmp"):
 		└─── sheet_2.svg
 	-> a_sheet_1.png, a_sheet_2.png, b_sheet_1.png, b_sheet_2.png
 	"""
-
 	os.makedirs(tmp_dir, exist_ok=True)
 
 	files: List[Tuple[str, str]] = []
