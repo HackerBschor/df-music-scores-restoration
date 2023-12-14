@@ -4,11 +4,10 @@ import re
 import subprocess
 from typing import List, Tuple
 
-import verovio
 from verovio import toolkit
 
 
-def musicxml_to_svg(input_file: str, output_path: str, name: str) -> List[str]:
+def convert_mxl_to_svg(input_file: str, output_path: str, name: str) -> List[str]:
 	tk: toolkit = toolkit()
 	tk.loadFile(input_file)
 
@@ -23,7 +22,7 @@ def musicxml_to_svg(input_file: str, output_path: str, name: str) -> List[str]:
 	return output_files
 
 
-def convert_sheets(input_dir: str, prefix: List[str]) -> None:
+def convert_mxls_to_svg(input_path: str, output_path: str, prefix: List[str] = ()) -> None:
 	"""
 	Convert all musicXML sheets in a folder (containing sub-folders) into SVG files.
 	Add the folders as prefixes to output files. Example:
@@ -34,18 +33,16 @@ def convert_sheets(input_dir: str, prefix: List[str]) -> None:
 			└───c.mxl
 	-> song_1.svg, song_2.svg, ..., song_n.svg, a_b_c_N.svg, a_b_c_1.svg, ..., a_b_c_M.svg
 	"""
-
 	# Walk through every element in the input folder
-	for element in os.listdir(input_dir):
-		file_path: str = os.path.join(input_dir, element)
+	for element in os.listdir(input_path):
+		file_path: str = os.path.join(input_path, element)
 
 		# If the element is a folder, add the folder name to the prefix and recursively execute the function
 		if os.path.isdir(file_path):
-			convert_sheets(file_path, prefix + [element])
+			convert_mxls_to_svg(file_path, output_path, list(prefix) + [element])
 		else:
-			print("Converting:", prefix, element)
 			name: str = "".join(map(lambda x: x + "_", prefix)) + element.split(".")[0]
-			musicxml_to_svg(file_path, "../dataset/existing/render", name)
+			convert_mxl_to_svg(file_path, output_path, name)
 
 
 def convert_svg_to_png(input_file: str, output_file: str, width: int = 2480, height: int = 3508) -> Tuple[bool, str]:
@@ -53,18 +50,30 @@ def convert_svg_to_png(input_file: str, output_file: str, width: int = 2480, hei
 
 	result: subprocess.CompletedProcess = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-	success: bool = (len(result.stderr) < 100 and "Background RRGGBBAA" in str(result.stderr)) or \
-					("Background RRGGBBAA" not in str(result.stderr) and len(result.stderr) == 0)
+	success: bool = len(result.stderr) < 100 and "Background RRGGBBAA" in str(result.stderr)
+	success = success or ("Background RRGGBBAA" not in str(result.stderr) and len(result.stderr) == 0)
 
 	return success, result.stderr.decode("utf-8")
 
 
-def convert_files(path_in: str, path_out: str, tmp_dir: str):
+def convert_svgs_to_png(path_in: str, path_out: str, tmp_dir: str = "tmp"):
+	"""
+	Convert all svg files in the subfolders of path_in into PNG files. Example:
+	input_dir
+	├─── a
+	│	├─── sheet_1.svg
+	│	└─── sheet_2.svg
+	└─── b
+		├─── sheet_1.svg
+		└─── sheet_2.svg
+	-> a_sheet_1.png, a_sheet_2.png, b_sheet_1.png, b_sheet_2.png
+	"""
+
 	os.makedirs(tmp_dir, exist_ok=True)
 
 	files: List[Tuple[str, str]] = []
 
-	# record all svg files in the sub-folders of a path_in into
+	# record all svg files in the subfolders of a path_in into
 	for folder in os.listdir(path_in):
 		for file in os.listdir(f"{path_in}/{folder}/"):
 
@@ -76,7 +85,7 @@ def convert_files(path_in: str, path_out: str, tmp_dir: str):
 			while "__" in name:
 				name = name.replace("__", "_")
 
-			path_file_out = os.path.join(path_out, name+".png")
+			path_file_out = os.path.join(path_out, name + ".png")
 
 			if os.path.exists(path_file_out):
 				continue
@@ -109,6 +118,5 @@ def convert_files(path_in: str, path_out: str, tmp_dir: str):
 				print(f"- Error: ({error})")
 
 	# Clean TMP files
-	os.remove(os.path.join(tmp_dir, "files.txt"))
 	os.remove(os.path.join(tmp_dir, "progress_done.txt"))
 	os.rmdir(tmp_dir)
