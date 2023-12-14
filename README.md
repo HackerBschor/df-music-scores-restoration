@@ -31,7 +31,7 @@ we've created an [audio file](assets/ds_creation/RandomMusic.mp3):
 https://github.com/HackerBschor/dl-music-scores-restoration/assets/33778754/1dee12ec-d101-45de-85f4-2464b57a5784
 
 To create the dirty images, we use the data augmentation tool [DocCreator](https://doc-creator.labri.fr/).
-We used the following degenerations resulting in four dirty images for a clean image: 
+We used the following augmentations resulting in four dirty images for a clean image: 
 
 | Task                   | Min | Max  |
 |------------------------|-----|------|
@@ -96,7 +96,7 @@ unit and changed the final activation function
 ([Sigmoid](https://pytorch.org/docs/stable/generated/torch.nn.Sigmoid.html) &#8594;
 [Tanh](https://pytorch.org/docs/stable/generated/torch.nn.Tanh.html)).   
 
-We trained the model in the [Training Pipeline](dl/training_full.ipynb) notebook. 
+We trained the model in the [Training Pipeline](dl/training_full.ipynb) notebook using 36802 sheets (13.3 GB) with 4 augmentations each (147208 sheets and 71.1 GB) 
 
 ## Loss Function and Baseline
 
@@ -107,9 +107,9 @@ Since evaluating generative AI can be quite challenging, we came up with differe
 * Returning the dirty image with no transformations ([Mock Baselines Pipeline](dl/mock_baselines.ipynb))
   * Here we mock a model that is "untrained"
 * Returning a completely white Image ([Mock Baselines Pipeline](dl/mock_baselines.ipynb))
-  * For this baseline, we mock a model that collapsed and learned that returning white images is the best solution
+  * For this baseline, we mock a model that collapsed and learned that returning white images is the best solution.
   This happened quite sometimes during the refinement of the architecture, 
-  because a major part of the sheets is often white
+  because a major part of the sheet is often white
 * Returning a random image ([Mock Baselines Pipeline](dl/mock_baselines.ipynb))
 * Train a Baseline using 1% of the training data ([Training Pipeline (1% Data)](dl/training_baseline.ipynb))
 
