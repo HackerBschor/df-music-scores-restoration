@@ -31,7 +31,7 @@ we've created an [audio file](assets/ds_creation/RandomMusic.mp3):
 https://github.com/HackerBschor/dl-music-scores-restoration/assets/33778754/1dee12ec-d101-45de-85f4-2464b57a5784
 
 To create the dirty images, we use the data augmentation tool [DocCreator](https://doc-creator.labri.fr/).
-We used the following degenerations resulting in 4 dirty images for a clean image: 
+We used the following degenerations resulting in four dirty images for a clean image: 
 
 | Task                   | Min | Max  |
 |------------------------|-----|------|
@@ -45,7 +45,8 @@ We used the following degenerations resulting in 4 dirty images for a clean imag
 To create a dataset, one can use the [Dataset Creation Pipeline](dataset_creation/dataset_creation.ipynb).
 One has to provide the paths to the MusicXML files and the path to the output directory.
 
-After the creation of the clean sheets, one have to use the data augmentation tool [DocCreator](https://doc-creator.labri.fr/)
+After the creation of the clean sheets, 
+one has to use the data augmentation tool [DocCreator](https://doc-creator.labri.fr/)
 to create the dirty images.
 
 We separately saved the clean and the dirty images (in our case: `pairs`). 
@@ -78,41 +79,55 @@ Here we provide an example file structure which is used by the pipelines:
 ## Training
 
 Using the damaged and the non-damaged music scores of the training set, 
-we trained a model on the clean scores and use the dirty ones as input.
+we trained a model on the clean scores and took the dirty ones as input.
 
-In order to keep the VRAM usage comparatively low, 
-we halved the size of the input images, since they are upscaled within the model anyway.
+To keep the VRAM usage comparatively low, 
+we halved the size of the input images since they are upscaled within the model anyway.
 
-We've tried different architectures ( e.g. [Hybrid Attention Transformer for Image Super-Resolution](https://arxiv.org/abs/2205.04437v3)
+We've tried different architectures
+(e.g. [Hybrid Attention Transformer for Image Super-Resolution](https://arxiv.org/abs/2205.04437v3)
 or combining two approaches), but due to the size of the images and therefore the high dimensionality,
 we had some issues to train a model.  
 
-We came up with a [new model](dl/model.py) by modify the [Denoising Documents Autoencoder](https://github.com/Surya-Prakash-Reddy/Denoising-Documents).
+We came up with a [new model](dl/model.py)
+by modifying the [Denoising Documents Autoencoder](https://github.com/Surya-Prakash-Reddy/Denoising-Documents).
 We modernized the PyTorch calls, added an [Upsample](https://pytorch.org/docs/stable/generated/torch.nn.Upsample.html) 
-unit and changed the final activation function ([Sigmoid](https://pytorch.org/docs/stable/generated/torch.nn.Sigmoid.html) &#8594; [Tanh](https://pytorch.org/docs/stable/generated/torch.nn.Tanh.html)).   
+unit and changed the final activation function
+([Sigmoid](https://pytorch.org/docs/stable/generated/torch.nn.Sigmoid.html) &#8594;
+[Tanh](https://pytorch.org/docs/stable/generated/torch.nn.Tanh.html)).   
 
 We trained the model in the [Training Pipeline](dl/training_full.ipynb) notebook. 
 
 ## Loss Function and Baseline
 
+### MSE
 Since evaluating generative AI can be quite challenging, we came up with different baselines by evaluating the 
 [MSE](https://pytorch.org/docs/stable/generated/torch.nn.MSELoss.html) on different outputs.  
 
-* Returning the same image with no transformations
-* Returning a completely white Image
-  * For different architecture and loss functions, the model quickly collapsed, so it ony returned a white image 
-    (most of the image is just white). So we came up with this baseline.
-* Returning a random image
-* Train a Baseline using 1% of the training data.
+* Returning the dirty image with no transformations ([Mock Baselines Pipeline](dl/mock_baselines.ipynb))
+  * Here we mock a model that is "untrained"
+* Returning a completely white Image ([Mock Baselines Pipeline](dl/mock_baselines.ipynb))
+  * For this baseline, we mock a model that collapsed and learned that returning white images is the best solution
+  This happened quite sometimes during the refinement of the architecture, 
+  because a major part of the sheets is often white
+* Returning a random image ([Mock Baselines Pipeline](dl/mock_baselines.ipynb))
+* Train a Baseline using 1% of the training data ([Training Pipeline (1% Data)](dl/training_baseline.ipynb))
 
-The first three baselines are implemented in the [Mock Baselines Pipeline](dl/mock_baselines.ipynb).
-and the last one is trained in the [Training Pipeline (1% Data)](dl/training_baseline.ipynb). 
+### Perceived Quality
+
+Since in generative AI, 
+the MSE doesn't always reflect the quality of the output (see the `Dirty Image Baseline` in the Results section),
+we take the Perceived Quality into account. 
+Here we look at some outcomes of the model and check if they make sense and match our expectations.
 
 ## Results
 
+### MSE 
 | White Image | Dirty Image | Random Image | 1% Data Model | Full Model |
 |:-----------:|:-----------:|:------------:|:-------------:|:----------:|
 |    0.146    |    0.033    |     1.31     |     0.053     |            |
+
+### Perceived Quality
 
 ## Future Work
 In the future, 
