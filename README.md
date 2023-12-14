@@ -40,7 +40,40 @@ We used the following degenerations resulting in 4 dirty images for a clean imag
 | Blur (Whole Page)      | 80% | 100% |
 | Hole                   | 16% | 32%  |
 
-![degenerations.png](assets/ds_creation/degenerations.png)
+### Dataset Generation
+
+To create a dataset, one can use the [Dataset Creation Pipeline](dataset_creation/dataset_creation.ipynb).
+One has to provide the paths to the MusicXML files and the path to the output directory.
+
+After the creation of the clean sheets, one have to use the data augmentation tool [DocCreator](https://doc-creator.labri.fr/)
+to create the dirty images.
+
+We separately saved the clean and the dirty images (in our case: `pairs`). 
+From there on, 
+we created the index for later identification using the second path of the [Dataset Creation Pipeline](dataset_creation/dataset_creation.ipynb).
+
+Here we provide an example file structure which is used by the pipelines:
+```
+📂 dataset
+├── 📂 existing
+│   ├── 📂 musicxml
+│   │   ├── Mozart
+│   │   │   ...
+│   │   │   └── 📜 Very Famous Composition.mxl
+│   │   ...
+│   │   └── 📜 Mr. Brightside – The Killers.mxl
+│   ├── 📂 render_png
+│   └── 📂 render_svg
+├── 📂 generated
+│   ├── 📂 musicxml
+│   ├── 📂 render_png
+│   └── 📂 render_svg
+└── 📂 pairs
+    ├── 📂 clean
+    ├── 📜 clean_dirty_index.csv
+    └── 📂 dirty
+```
+
 
 ## Training
 
@@ -92,6 +125,10 @@ we think of fine-tuning the model using real scans of old used music sheets and 
 * [HAT Github](https://github.com/XPixelGroup/HAT)
 * [Image Super-Resolution Using Deep Convolutional Networks](https://arxiv.org/abs/1501.00092)
 * [CNN Github](https://github.com/amanshenoy/image-super-resolution)
+
+## Installation
+
+
 
 ## Work Breakdown structure
 
