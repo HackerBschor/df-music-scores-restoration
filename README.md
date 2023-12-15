@@ -102,13 +102,15 @@ We trained the model in the [Training Pipeline](dl/training_full.ipynb) notebook
 The following images shows the training- & validation-losses during training in order to ensure there is no overfitting. 
 ![TrainValMSEe.png](assets/TrainValMSEs.png)
 
+To create the predictions from an input image, we included a [Prediction Pipeline](dl/prediction.ipynb).
+
 ## Loss Function and Baseline
 
 ### MSE
 Since evaluating generative AI can be quite challenging, we came up with different baselines by evaluating the 
 [MSE](https://pytorch.org/docs/stable/generated/torch.nn.MSELoss.html) on different outputs.  
 
-We experimented with different loss functions but MSE turned out to produce the best results.  
+We experimented with different loss functions, but MSE turned out to produce the best results.  
 
 * Returning the dirty image with no transformations ([Mock Baselines Pipeline](dl/mock_baselines.ipynb))
   * Here we mock a model that is "untrained"
@@ -135,9 +137,33 @@ Here we look at some outcomes of the model and check if they make sense and matc
 
 ### Perceived Quality
 
+For the perceived quality, the baselines `White Image`, `Dirty Image` and `Random Image`
+do not satisfy the expectations at all. 
+
+However, the `1% Data Model` and the `Full Model` produce quite good results.
+
+When comparing the outputs of the model with the outputs of the baselines, 
+we can observe that the observation matches the MSE results and we have some 
+cleaner results. 
+
+![Comparision Baseline Full](assets/predictions/comparison_baseline_full.png)
+![Comparison Augmentations](assets/predictions/comparison_augmentations.png)
+
+One can explore the predictions in some [examples](assets/predictions).
+
 ## Future Work
 In the future, 
 we think of fine-tuning the model using real scans of old used music sheets and brand-new ones.
+
+## Installation
+
+To run the data generation pipeline, one has to install [inkscape](https://inkscape.org/de/).
+We recommend installing PyTorch using their [guide](https://pytorch.org/get-started/locally/).
+For the reset, we can simply install the requirements.
+
+```console
+pip3 install -r requirements.txt
+```
 
 ## References
 * [Denoising Text Image Documents using Autoencoders](https://www.researchgate.net/publication/356423394_Denoising_Text_Image_Documents_using_Autoencoders)
@@ -147,15 +173,6 @@ we think of fine-tuning the model using real scans of old used music sheets and 
 * [Image Super-Resolution Using Deep Convolutional Networks](https://arxiv.org/abs/1501.00092)
 * [CNN Github](https://github.com/amanshenoy/image-super-resolution)
 
-## Installation
-
-In order to run the data generation pipeline one has to install [inkscape](https://inkscape.org/de/).
-We recommend to install PyTorch using their [guide](https://pytorch.org/get-started/locally/).
-For the reset, just install the requirements.
-
-```console
-pip3 install -r requirements.txt
-```
 
 ## Work Breakdown structure
 
