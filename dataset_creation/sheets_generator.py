@@ -26,10 +26,12 @@ def convert_to_xml(performance: Performance) -> pymusicxml.Score:
     while True:
         tim_sig = f"{get_rand_from_list([i for i in range(32)])} / {get_rand_from_list([2 ** i for i in range(6)])}"
 
+        # Sometimes for a given time_signature, the pymusicxml library throws a ValueError.
+        # So we try until a working one is found.
         try:
-            score: Score = performance.to_score(
-                title=gen_rand_str(), composer=gen_rand_str(), time_signature=tim_sig)
+            score: Score = performance.to_score(title=gen_rand_str(), composer=gen_rand_str(), time_signature=tim_sig)
             return score.to_music_xml()
+
         except ValueError:
             pass
 
@@ -64,7 +66,7 @@ class RandomMusicGenerator:
         # Add or remove slur
         if slur and self.is_slur[num_instrument] == -1:
             if random.random() < 0.05:
-                # Add slur for 1-8 notes
+                # Add slur for 1-8 notes (saved in counter)
                 self.is_slur[num_instrument] = random.randint(1, 8)
                 properties.append(StartSlur())
         else:
@@ -80,6 +82,9 @@ class RandomMusicGenerator:
         return random.randint(self.note_ranges[num_instrument][0], self.note_ranges[num_instrument][1])
 
     def play(self, num_instrument: int) -> None:
+        """
+        Plays a random "melodies" for the given number of instruments
+        """
         inst: ScampInstrument = self.instruments[num_instrument]
 
         while self.curr_beat[num_instrument] < self.num_beats:
