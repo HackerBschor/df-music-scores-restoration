@@ -3,7 +3,7 @@ from typing import Tuple, List, Set, Dict
 
 import pandas as pd
 
-# Filename endings of the DocCreator (https://doc-creator.labri.fr/) degenerations
+# Filename endings of the DocCreator (https://doc-creator.labri.fr/) damages
 doccreator_endings = ["Bleed_0", "Blur_Complete_0", "CharDeg_0", "Hole_0", "Phantom_FREQUENT_0", "Phantom_RARE_0",
                       "Shadow_Bottom", "Shadow_Left", "Shadow_Right", "Shadow_Top"]
 

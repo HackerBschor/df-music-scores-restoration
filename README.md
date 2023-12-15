@@ -8,9 +8,9 @@ Error Metric: `Mean Squared Error`
 <br>
 Target Score: `Better than Baselines (specified in a later section)`
 
-This project aims to restore damaged music scores using deep learning methods. 
+This project aims to restore damaged/ dirty music scores using deep learning methods. 
 We use **Convolutional Autoencoder** to perform several generative AI tasks to **up-scale**, 
-**deblur** and **enrich** damaged music score into a cleaner and more readable form. 
+**deblur** and **enrich** dirty music score into a cleaner and more readable form. 
 
 ## Dataset 
 
@@ -78,7 +78,7 @@ Here we provide an example file structure which is used by the pipelines:
 
 ## Training
 
-Using the damaged and the non-damaged music scores of the training set, 
+Using the dirty and the non-dirty music scores of the training set, 
 we trained a model on the clean scores and took the dirty ones as input.
 
 To keep the VRAM usage comparatively low, 
@@ -96,13 +96,19 @@ unit and changed the final activation function
 ([Sigmoid](https://pytorch.org/docs/stable/generated/torch.nn.Sigmoid.html) &#8594;
 [Tanh](https://pytorch.org/docs/stable/generated/torch.nn.Tanh.html)).   
 
-We trained the model in the [Training Pipeline](dl/training_full.ipynb) notebook using 36802 sheets (13.3 GB) with 4 augmentations each (147208 sheets and 71.1 GB) 
+We trained the model in the [Training Pipeline](dl/training_full.ipynb) notebook using 
+36802 sheets (13.3 GB) with 4 augmentations each (147208 sheets and 71.1 GB) on 5 epochs. 
+
+The following images shows the training- & validation-losses during training in order to ensure there is no overfitting. 
+![TrainValMSEe.png](assets/TrainValMSEs.png)
 
 ## Loss Function and Baseline
 
 ### MSE
 Since evaluating generative AI can be quite challenging, we came up with different baselines by evaluating the 
 [MSE](https://pytorch.org/docs/stable/generated/torch.nn.MSELoss.html) on different outputs.  
+
+We experimented with different loss functions but MSE turned out to produce the best results.  
 
 * Returning the dirty image with no transformations ([Mock Baselines Pipeline](dl/mock_baselines.ipynb))
   * Here we mock a model that is "untrained"
@@ -125,7 +131,7 @@ Here we look at some outcomes of the model and check if they make sense and matc
 ### MSE 
 | White Image | Dirty Image | Random Image | 1% Data Model | Full Model |
 |:-----------:|:-----------:|:------------:|:-------------:|:----------:|
-|    0.146    |    0.033    |     1.31     |     0.053     |            |
+|    0.146    |    0.033    |     1.31     |     0.053     |   0.047    |
 
 ### Perceived Quality
 
@@ -143,7 +149,13 @@ we think of fine-tuning the model using real scans of old used music sheets and 
 
 ## Installation
 
+In order to run the data generation pipeline one has to install [inkscape](https://inkscape.org/de/).
+We recommend to install PyTorch using their [guide](https://pytorch.org/get-started/locally/).
+For the reset, just install the requirements.
 
+```console
+pip3 install -r requirements.txt
+```
 
 ## Work Breakdown structure
 
