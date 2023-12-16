@@ -137,19 +137,28 @@ Here we look at some outcomes of the model and check if they make sense and matc
 
 ### Perceived Quality
 
-For the perceived quality, the baselines `White Image`, `Dirty Image` and `Random Image`
+Regarding the perceived quality, the baselines `White Image`, `Dirty Image` and `Random Image`
 do not satisfy the expectations at all. 
 
 However, the `1% Data Model` and the `Full Model` produce quite good results.
 
 When comparing the outputs of the model with the outputs of the baselines, 
-we can observe that the observation matches the MSE results and we have some 
-cleaner results. 
+one can observe that the observation matches the MSE results, 
+and we have some cleaner results. 
 
 ![Comparision Baseline Full](assets/predictions/comparison_baseline_full.png)
 ![Comparison Augmentations](assets/predictions/comparison_augmentations.png)
 
 One can explore the predictions in some [examples](assets/predictions).
+
+## Tests
+
+We tested the model on some real-world examples and a [Test Image](assets/tests/input/test_image.png)
+to understand what the model is doing. 
+We stored the images and predictions in the [assets folder](assets/tests). 
+
+Here we found out that the model is surprisingly good at removing the watermarks 
+([Watermarked Image](assets/tests/input/9784025-old-music-note-sheet.jpg), [Output](assets/tests/prediction/9784025-old-music-note-sheet.jpg)).
 
 ## Future Work
 In the future, 
