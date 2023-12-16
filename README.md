@@ -164,7 +164,7 @@ Here we found out that the model is surprisingly good at removing the watermarks
 In the future, 
 we think of fine-tuning the model using real scans of old used music sheets and brand-new ones.
 
-## Installation
+## Installation 
 
 To run the data generation pipeline, one has to install [inkscape](https://inkscape.org/de/).
 We recommend installing PyTorch using their [guide](https://pytorch.org/get-started/locally/).
