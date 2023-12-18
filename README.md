@@ -188,15 +188,13 @@ pip3 install -r requirements.txt
 In the following table, we break down the tasks and the
 estimated amount of time needed to complete them. 
 
-| Task                  | Estimated Time         |
+| Task                  | Time         |
 |-----------------------|------------------------|
-| Research              | 2 Days                 |
-| Dataset Generation    | 1 Day                  |
+| Research              | 1.5 Days                 |
+| Dataset Generation    | 2 Day                  |
 | Model Creation        | 3 Days                 |
-| Model Training        | 1 Day (no work for me) |
-| Model Evaluation      | 1 Days                 |
-| Integration           | 2 Days                 |
-| Report & Presentation | 1 Day                  |
+| Model Training        | 2 Day (no work for me) |
+| Model Evaluation      | 0.5 Days                 |
 
 
 ### Disclaimer
