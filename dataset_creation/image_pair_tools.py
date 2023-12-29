@@ -42,4 +42,4 @@ def convert_dict_clean_dirty_to_df(dict_clean_dirty):
             result_list.append((key, None))
 
     # Create a DataFrame from the list of tuples
-    return pd.DataFrame(result_list, columns=['file_perfect', 'file_broken']).set_index("file_perfect")
+    return pd.DataFrame(result_list, columns=['file_clean', 'file_dirty']).set_index("file_clean")
