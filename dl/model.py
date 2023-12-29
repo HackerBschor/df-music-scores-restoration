@@ -2,7 +2,7 @@ from torch import nn
 
 
 class ConvAutoencoderDenoiser (nn.Module):
-    def __init__(self, size):
+    def __init__(self):
         super().__init__()
         # defining the encoder
         self.encoder = nn.Sequential(
@@ -22,7 +22,7 @@ class ConvAutoencoderDenoiser (nn.Module):
             nn.ReLU(),
             nn.Upsample(scale_factor=2),
             nn.Conv2d(32, 1, kernel_size=3, padding=1, stride=1),
-            nn.Upsample(size=size),
+            nn.Upsample(scale_factor=2),
             nn.Tanh()
         )
 
