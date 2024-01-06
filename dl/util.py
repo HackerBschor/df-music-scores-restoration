@@ -43,8 +43,17 @@ def preprocess(path: str, filename: str, sub_image_shape=(310, 440)) -> tuple[li
     return sub_images, image.size
 
 
+def flatten_tensor_list(tensors: list[list[torch.Tensor]]) -> torch.Tensor:
+    ts = []
+    for row in tensors:
+        for t in row:
+            ts.append(t)
+
+    return torch.stack(ts)
+
+
 def undo_preprocessing(tensor: torch.Tensor) -> Image.Image:
-    tensor_np = ((0.5 * tensor.detach().numpy() + 0.5) * 255).astype(np.uint8).squeeze()
+    tensor_np = ((0.5 * tensor.detach().cpu().numpy() + 0.5) * 255).astype(np.uint8).squeeze()
     return Image.fromarray(tensor_np).convert('RGB')
 
 
