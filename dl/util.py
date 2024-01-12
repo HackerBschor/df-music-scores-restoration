@@ -9,9 +9,13 @@ import PIL.ImageOps
 transformer = transforms.Compose([transforms.ToTensor(), transforms.Normalize(0.5, 0.5)])
 
 
-def preprocess(path: str, filename: str, sub_image_shape=(310, 440)) -> tuple[list[list[PIL.Image]], tuple[int, int]]:
-    image = PIL.ImageOps.invert(Image.open(f"{path}/{filename}").convert('L'))
+def preprocess_file(path: str, filename: str, sub_image_shape=(310, 440)) -> tuple[list[list[PIL.Image]], tuple[int, int]]:
+    image = Image.open(f"{path}/{filename}").convert('L')
+    return preprocess_file(image, sub_image_shape)
 
+
+def preprocess_image(image: PIL.Image, sub_image_shape=(310, 440)):
+    image = PIL.ImageOps.invert(image)
     original_width, original_height = image.size
 
     # Calculate the number of sub-images in both dimensions
