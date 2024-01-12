@@ -33,12 +33,20 @@ https://github.com/HackerBschor/dl-music-scores-restoration/assets/33778754/1dee
 To create the dirty images, we use the data augmentation tool [DocCreator](https://doc-creator.labri.fr/).
 We used the following augmentations resulting in four dirty images for a clean image: 
 
-| Task                   | Min | Max  |
-|------------------------|-----|------|
-| Character Degeneration | 90% | 100% |
-| Bleed Through          | 50% | 99%  |
-| Blur (Whole Page)      | 80% | 100% |
-| Hole                   | 16% | 32%  |
+| Augmentation                              | Min | Max  |
+|-------------------------------------------|-----|------|
+| Character Degeneration                    | 90% | 100% |
+| Bleed Through                             | 50% | 99%  |
+| Blur (Whole Page)                         | 80% | 100% |
+| Hole                                      | 16% | 32%  |
+| Shadow Binding (Left, Right, Top, Bottom) |     |      |
+
+We used the following Shadow Binding parameters:
+* width: 100%
+* intensity: 96%
+* angle: 9%
+
+![damages.png](assets/damages.png)
 
 ### Dataset Generation
 
@@ -75,6 +83,13 @@ Here we provide an example file structure which is used by the pipelines:
     └── 📂 dirty
 ```
 
+## Preprocessing
+
+In order to keep the VRAM usage in a decent scale, we cut the Image into smaller pieces of size 416px X 308px.
+We chose this resolution, since it corresponds approximately to the DINA4 resolution. 
+Furthermore, both resolution axis have to be dividable by four in order to get a same sized image
+(Because the encoder halve the image two times and the decoder then doubles it two times).
+![preprocessed.png](assets/preprocessed.png)
 
 ## Training
 
