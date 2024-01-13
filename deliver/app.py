@@ -29,7 +29,8 @@ def preprocess_file(path: str, filename: str, sub_image_shape=(310, 440)):
 
 def preprocess_image(image: PIL.Image, sub_image_shape=(310, 440)):
     image = PIL.ImageOps.invert(image)
-    original_width, original_height = image.size
+    original_width, original_height = (2480, 3508)
+    image = image.resize((original_width, original_height))
 
     # Calculate the number of sub-images in both dimensions
     num_horizontal = math.ceil(original_width / sub_image_shape[0])
@@ -97,7 +98,8 @@ def apply_model(file: FileStorage) -> tuple[str, BytesIO]:
 
     tensors_flat = flatten_tensor_list(tensors)
 
-    prediction = model(tensors_flat)
+    with torch.no_grad():
+        prediction = model(tensors_flat)
 
     prediction_reshape = []
     for i in range(len(tensors)):

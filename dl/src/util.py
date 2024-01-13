@@ -11,7 +11,7 @@ transformer = transforms.Compose([transforms.ToTensor(), transforms.Normalize(0.
 
 def preprocess_file(path: str, filename: str, sub_image_shape=(310, 440)) -> tuple[list[list[PIL.Image]], tuple[int, int]]:
     image = Image.open(f"{path}/{filename}").convert('L')
-    return preprocess_file(image, sub_image_shape)
+    return preprocess_image(image, sub_image_shape)
 
 
 def preprocess_image(image: PIL.Image, sub_image_shape=(310, 440)):

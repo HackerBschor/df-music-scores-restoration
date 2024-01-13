@@ -79,8 +79,8 @@ Here we provide an example file structure which is used by the pipelines:
 │   └── 📂 render_svg
 └── 📂 pairs
     ├── 📂 clean
-    ├── 📜 clean_dirty_index.csv
-    └── 📂 dirty
+    ├── 📂 dirty
+    └── 📜 clean_dirty_index.csv
 ```
 
 ## Preprocessing
@@ -96,15 +96,12 @@ Furthermore, both resolution axis have to be dividable by four in order to get a
 Using the dirty and the non-dirty music scores of the training set, 
 we trained a model on the clean scores and took the dirty ones as input.
 
-To keep the VRAM usage comparatively low, 
-we halved the size of the input images since they are upscaled within the model anyway.
-
 We've tried different architectures
 (e.g. [Hybrid Attention Transformer for Image Super-Resolution](https://arxiv.org/abs/2205.04437v3)
 or combining two approaches), but due to the size of the images and therefore the high dimensionality,
 we had some issues to train a model.  
 
-We came up with a [new model](dl/model.py)
+We came up with a [new model](dl/src/model.py)
 by modifying the [Denoising Documents Autoencoder](https://github.com/Surya-Prakash-Reddy/Denoising-Documents).
 We modernized the PyTorch calls, added an [Upsample](https://pytorch.org/docs/stable/generated/torch.nn.Upsample.html) 
 unit and changed the final activation function
@@ -112,12 +109,11 @@ unit and changed the final activation function
 [Tanh](https://pytorch.org/docs/stable/generated/torch.nn.Tanh.html)).   
 
 We trained the model in the [Training Pipeline](dl/training_full.ipynb) notebook using 
-36802 sheets (13.3 GB) with 4 augmentations each (147208 sheets and 71.1 GB) on 5 epochs. 
+36802 sheets (13.3 GB) with 5 augmentations each (184010 sheets and 80.9 GB) on 6 epochs. 
 
-The following images shows the training- & validation-losses during training in order to ensure there is no overfitting. 
+The following images shows the training- & validation-losses during training in order to ensure there is no overfitting 
+(The first epoch is not included due to a crash).
 ![TrainValMSEe.png](assets/TrainValMSEs.png)
-
-To create the predictions from an input image, we included a [Prediction Pipeline](dl/prediction.ipynb).
 
 ## Loss Function and Baseline
 
@@ -134,35 +130,14 @@ We experimented with different loss functions, but MSE turned out to produce the
   This happened quite sometimes during the refinement of the architecture, 
   because a major part of the sheet is often white
 * Returning a random image ([Mock Baselines Pipeline](dl/mock_baselines.ipynb))
-* Train a Baseline using 1% of the training data ([Training Pipeline (1% Data)](dl/training_baseline.ipynb))
-
-### Perceived Quality
-
-Since in generative AI, 
-the MSE doesn't always reflect the quality of the output (see the `Dirty Image Baseline` in the Results section),
-we take the Perceived Quality into account. 
-Here we look at some outcomes of the model and check if they make sense and match our expectations.
 
 ## Results
 
 ### MSE 
-| White Image | Dirty Image | Random Image | 1% Data Model | Full Model |
-|:-----------:|:-----------:|:------------:|:-------------:|:----------:|
-|    0.146    |    0.033    |     1.31     |     0.053     |   0.047    |
+| White Image | Dirty Image | Random Image | Model |
+|:-----------:|:-----------:|:------------:|:-----:|
+|    0.138    |    0.489    |    0.392     | 0.047 |
 
-### Perceived Quality
-
-Regarding the perceived quality, the baselines `White Image`, `Dirty Image` and `Random Image`
-do not satisfy the expectations at all. 
-
-However, the `1% Data Model` and the `Full Model` produce quite good results.
-
-When comparing the outputs of the model with the outputs of the baselines, 
-one can observe that the observation matches the MSE results, 
-and we have some cleaner results. 
-
-![Comparision Baseline Full](assets/predictions/comparison_baseline_full.png)
-![Comparison Augmentations](assets/predictions/comparison_augmentations.png)
 
 One can explore the predictions in some [examples](assets/predictions).
 
@@ -181,9 +156,23 @@ we think of fine-tuning the model using real scans of old used music sheets and 
 
 ## Installation 
 
+## Training
 To run the data generation pipeline, one has to install [inkscape](https://inkscape.org/de/).
 We recommend installing PyTorch using their [guide](https://pytorch.org/get-started/locally/).
-For the reset, we can simply install the requirements.
+
+```console
+pip3 install -r requirements.txt
+```
+
+## Deployment
+
+To build and run a user-friendly application, you have to install 
+[Docker](https://www.docker.com/) and run the following commands.  
+```console
+cd deliver
+docker build -t music-scores-restoration .
+docker run -p 127.0.0.1:5000:5000 music-scores-restoration
+```
 
 ```console
 pip3 install -r requirements.txt
@@ -198,18 +187,19 @@ pip3 install -r requirements.txt
 * [CNN Github](https://github.com/amanshenoy/image-super-resolution)
 
 
-## Work Breakdown structure
+## Work Breakdown
 
 In the following table, we break down the tasks and the
 estimated amount of time needed to complete them. 
 
-| Task                  | Time         |
-|-----------------------|------------------------|
-| Research              | 1.5 Days                 |
-| Dataset Generation    | 2 Day                  |
-| Model Creation        | 3 Days                 |
-| Model Training        | 2 Day (no work for me) |
-| Model Evaluation      | 0.5 Days                 |
+| Task               | Time                   |
+|--------------------|------------------------|
+| Research           | 1.5 Days               |
+| Dataset Generation | 2 Day                  |
+| Model Creation     | 4 Days                 |
+| Model Training     | 5 Day (no work for me) |
+| Model Evaluation   | 0.5 Days               |
+| Deployment         | 1 Day                  |
 
 
 ### Disclaimer
